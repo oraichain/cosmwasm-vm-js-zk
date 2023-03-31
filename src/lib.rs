@@ -13,14 +13,25 @@ pub fn groth16_verify(
     input: Uint8Array,
     proof: Uint8Array,
     vk: Uint8Array,
+    curve: u8,
 ) -> Result<bool, JsValue> {
-    cosmwasm_crypto::groth16_verify(&input.to_vec(), &proof.to_vec(), &vk.to_vec())
+    cosmwasm_crypto::groth16_verify(&input.to_vec(), &proof.to_vec(), &vk.to_vec(), curve)
         .map_err(|err| JsValue::from_str(&err.to_string()))
 }
 
 #[wasm_bindgen]
-pub fn curve_hash(input: Uint8Array) -> Uint8Array {
-    from_bytes(&cosmwasm_crypto::curve_hash(&input.to_vec()), None)
+pub fn curve_hash(input: Uint8Array, curve: u8) -> Uint8Array {
+    from_bytes(&cosmwasm_crypto::curve_hash(&input.to_vec(), curve), None)
+}
+
+#[wasm_bindgen]
+pub fn keccak_256(input: Uint8Array) -> Uint8Array {
+    from_bytes(&cosmwasm_crypto::keccak_256(&input.to_vec()), None)
+}
+
+#[wasm_bindgen]
+pub fn sha256(input: Uint8Array) -> Uint8Array {
+    from_bytes(&cosmwasm_crypto::sha256(&input.to_vec()), None)
 }
 
 #[wasm_bindgen]
@@ -37,17 +48,14 @@ impl Poseidon {
         }
     }
 
-    pub fn hash(&self, inputs: Vec<Uint8Array>) -> Result<Uint8Array, JsValue> {
-        // create a copy value using let
-        let inputs: Vec<Vec<u8>> = inputs.iter().map(|item| item.to_vec()).collect();
-        // then create a vector of references
-        let mut array: Vec<&[u8]> = vec![];
-        for input in inputs.iter() {
-            array.push(input);
-        }
-
+    pub fn hash(
+        &self,
+        left_input: Uint8Array,
+        right_input: Uint8Array,
+        curve: u8,
+    ) -> Result<Uint8Array, JsValue> {
         self.poseidon
-            .hash(&array)
+            .hash(&left_input.to_vec(), &right_input.to_vec(), curve)
             .map(|item| from_bytes(&item, None))
             .map_err(|err| JsValue::from_str(&err.to_string()))
     }
@@ -69,20 +77,20 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_zk() {
-        let curve_hash = curve_hash(from_bytes(&hex::decode(COMMITMENT).unwrap(), None));
+        let curve_hash = curve_hash(from_bytes(&hex::decode(COMMITMENT).unwrap(), None), 1);
         console_log!("curve_hash: {:?}", hex::encode(curve_hash.to_vec()));
 
         let input = from_bytes(&hex::decode(PUBLIC_INPUT).unwrap(), None);
         let proof = from_bytes(&hex::decode(PROOF).unwrap(), None);
         let vk = from_bytes(&hex::decode(VK).unwrap(), None);
 
-        let verified = groth16_verify(input, proof, vk);
+        let verified = groth16_verify(input, proof, vk, 1);
         console_log!("verified: {:?}", verified);
 
         let poseidon = Poseidon::new();
         let commitment_hash = from_bytes(&hex::decode(COMMITMENT).unwrap(), None);
         let poseidon_hash = poseidon
-            .hash(vec![commitment_hash.clone(), commitment_hash])
+            .hash(commitment_hash.clone(), commitment_hash, 1)
             .map(|item| hex::encode(item.to_vec()));
 
         console_log!("poseidon_hash: {:?}", poseidon_hash);
