@@ -24,7 +24,7 @@ js-sys = "0.3.55"
 
 # zk import 
 getrandom = { version = "0.2", features = ["js"] }
-cosmwasm-crypto = { git = "https://github.com/oraichain/cosmwasm", rev = "ed25be5d", default-features = false }
+cosmwasm-crypto = { git = "https://github.com/oraichain/cosmwasm", default-features = false }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.28"
