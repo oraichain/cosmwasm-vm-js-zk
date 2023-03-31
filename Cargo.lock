@@ -331,7 +331,7 @@ checksum = "520fbf3c07483f94e3e3ca9d0cfd913d7718ef2483d2cfd91c0d9e91474ab913"
 [[package]]
 name = "cosmwasm-crypto"
 version = "1.2.3"
-source = "git+https://github.com/oraichain/cosmwasm?rev=853d5245#853d52457b837424f7044928d53c9c3999598eb7"
+source = "git+https://github.com/oraichain/cosmwasm?rev=ed25be5d#ed25be5d0b1d0a6868ea346018a33670f6d33c73"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
