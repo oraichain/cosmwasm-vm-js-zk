@@ -1,10 +1,10 @@
 {
-  "name": "cosmwasm-vm-js-zk",
+  "name": "@oraichain/cosmwasm-vm-zk-web",
   "collaborators": [
     "Thanh tu <tu@orai.io>",
     "Duc Pham <duc@orai.io>"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "files": [
     "cosmwasm_vm_js_zk_bg.wasm",
     "cosmwasm_vm_js_zk.js",
