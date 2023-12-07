@@ -207,7 +207,7 @@ module.exports.__wbindgen_memory = function() {
     return addHeapObject(ret);
 };
 
-const path = require('path').join(__dirname, 'cosmwasm_vm_js_zk_bg.wasm');
+const path = require('path').join(__dirname, 'cosmwasm_vm_js_zk_bg_main.wasm');
 const bytes = require('fs').readFileSync(path);
 
 const wasmModule = new WebAssembly.Module(bytes);
